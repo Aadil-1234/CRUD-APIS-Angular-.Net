@@ -1,0 +1,174 @@
+<div class="container-fluid">
+    <h1 class="text-center mb-4">Project Dashboard</h1>
+
+    <div class="row">
+        <!-- Books Section -->
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="h5 mb-0">Library (Books)</h2>
+                </div>
+                <div class="card-body position-relative">
+                    <!-- Loading Overlay -->
+                    <div *ngIf="isLoading" class="loading-overlay">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+
+                    <!-- Search and Sort Controls -->
+                    <div class="row mb-3">
+                        <div class="col-md-7">
+                            <input [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" class="form-control" placeholder="Search Title or Author...">
+                        </div>
+                        <div class="col-md-5">
+                            <select [(ngModel)]="sortBy" (ngModelChange)="onSortChange()" class="form-select">
+                                <option value="">Sort By</option>
+                                <option value="az">Title: A-Z</option>
+                                <option value="za">Title: Z-A</option>
+                                <option value="author-az">Author: A-Z</option>
+                                <option value="author-za">Author: Z-A</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <input [(ngModel)]="newBook.title" class="form-control" placeholder="Title">
+                        <input [(ngModel)]="newBook.author" class="form-control" placeholder="Author">
+                        <button class="btn btn-success" (click)="addBook()">Add</button>
+                    </div>
+                    <table class="table table-hover table-sm">
+                        <thead>
+                            <tr>
+                                <th (click)="toggleSort('title')" class="sort-header" [class.active]="sortBy === 'az' || sortBy === 'za'">
+                                    Title
+                                    <div class="sort-icons">
+                                        <span [class.active-sort]="sortBy === 'az'">▲</span>
+                                        <span [class.active-sort]="sortBy === 'za'">▼</span>
+                                    </div>
+                                </th>
+                                <th (click)="toggleSort('author')" class="sort-header" [class.active]="sortBy === 'author-az' || sortBy === 'author-za'">
+                                    Author
+                                    <div class="sort-icons">
+                                        <span [class.active-sort]="sortBy === 'author-az'">▲</span>
+                                        <span [class.active-sort]="sortBy === 'author-za'">▼</span>
+                                    </div>
+                                </th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let b of books">
+                                <td>{{b.title}}</td>
+                                <td>{{b.author}}</td>
+                                <td>
+                                    <button class="btn btn-danger btn-sm" (click)="deleteBook(b.id)">Del</button>
+                                </td>
+                            </tr>
+                            <tr *ngIf="books.length === 0 && !isLoading">
+                                <td colspan="3" class="text-center text-muted">No books found.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Advanced Pagination Controls -->
+                    <div *ngIf="totalCount > 0" class="pagination-container mt-3">
+                        <div class="d-flex justify-content-between align-items-center w-100 mb-2">
+                            <small class="text-muted">
+                                Showing {{ (currentPage - 1) * pageSize + 1 }} - {{ Math.min(currentPage * pageSize, totalCount) }} of {{ totalCount }}
+                            </small>
+                            <div class="d-flex align-items-center gap-2">
+                                <small class="text-muted text-nowrap">Page Size:</small>
+                                <select [(ngModel)]="pageSize" (change)="onPageSizeChange()" class="form-select form-select-sm" style="width: auto;">
+                                    <option [ngValue]="5">5</option>
+                                    <option [ngValue]="10">10</option>
+                                    <option [ngValue]="20">20</option>
+                                    <option [ngValue]="50">50</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination pagination-sm justify-content-center mb-2">
+                                <!-- First -->
+                                <li class="page-item" [class.disabled]="currentPage === 1">
+                                    <button class="page-link" (click)="onPageChange(1)" [disabled]="currentPage === 1" title="First Page">
+                                        <i class="bi bi-chevron-double-left">«</i>
+                                    </button>
+                                </li>
+                                <!-- Previous -->
+                                <li class="page-item" [class.disabled]="currentPage === 1">
+                                    <button class="page-link" (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1">Prev</button>
+                                </li>
+
+                                <!-- Page Numbers -->
+                                <li *ngFor="let p of visiblePages" class="page-item" [class.active]="currentPage === p">
+                                    <button class="page-link" (click)="onPageChange(p)">{{p}}</button>
+                                </li>
+
+                                <!-- Next -->
+                                <li class="page-item" [class.disabled]="currentPage === totalPages">
+                                    <button class="page-link" (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
+                                </li>
+                                <!-- Last -->
+                                <li class="page-item" [class.disabled]="currentPage === totalPages">
+                                    <button class="page-link" (click)="onPageChange(totalPages)" [disabled]="currentPage === totalPages" title="Last Page">
+                                        <i class="bi bi-chevron-double-right">»</i>
+                                    </button>
+                                </li>
+                            </ul>
+                        </nav>
+
+                        <!-- Jump to Page -->
+                        <div class="input-group input-group-sm mb-0" style="max-width: 150px;">
+                            <span class="input-group-text">Go to</span>
+                            <input type="number" [(ngModel)]="jumpPage" (keyup.enter)="onJumpPage()" class="form-control" [max]="totalPages" min="1">
+                            <button class="btn btn-outline-secondary" (click)="onJumpPage()">Go</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Employees Section -->
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-info text-white">
+                    <h2 class="h5 mb-0">Employees Module</h2>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Use the navigation menu for full Employee CRUD. Below is the quick view.</p>
+                    <app-employee-list></app-employee-list>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Clients Section -->
+    <div class="row mt-2">
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4 border-dark">
+                <div class="card-header bg-dark text-white">
+                    <h2 class="h5 mb-0">Clients CRUD</h2>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted small">Use the Clients page from the main navigation to add, edit, or delete clients.</p>
+                    <app-client-list></app-client-list>
+                </div>
+            </div>
+        </div>
+
+        <!-- Students Section (New) -->
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4 border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="h5 mb-0">Students CRUD</h2>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted small">Use the Students page from the main navigation to add, edit, or delete students.</p>
+                    <app-student-list></app-student-list>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

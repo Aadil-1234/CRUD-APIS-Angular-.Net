@@ -1,0 +1,41 @@
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card bg-light border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h4>{{ isEditMode ? 'Edit Student' : 'Add Student' }}</h4>
+                </div>
+                <div class="card-body">
+                    <form [formGroup]="studentForm" (ngSubmit)="onSubmit()">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Name *</label>
+                                <input type="text" class="form-control" formControlName="name">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Phone Number *</label>
+                                <input type="text" class="form-control" formControlName="phoneNumber">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Course *</label>
+                                <input type="text" class="form-control" formControlName="course">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Department *</label>
+                                <input type="text" class="form-control" formControlName="department">
+                            </div>
+                        </div>
+                        <div class="mt-4 text-end">
+                            <button type="submit" class="btn btn-primary me-2" [disabled]="studentForm.invalid">
+                                {{ isEditMode ? 'Update Student' : 'Save Student' }}
+                            </button>
+                            <button type="button" class="btn btn-secondary" routerLink="/students">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

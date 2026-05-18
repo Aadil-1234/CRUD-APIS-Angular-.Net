@@ -1,0 +1,45 @@
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <h3>{{ isEditMode ? 'Edit Employee' : 'Add Employee' }}</h3>
+        </div>
+        <div class="card-body">
+            <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
+                <div class="mb-3">
+                    <label class="form-label">Employee Name</label>
+                    <input type="text" class="form-control" formControlName="employeeName" 
+                           [class.is-invalid]="employeeForm.get('employeeName')?.invalid && employeeForm.get('employeeName')?.touched">
+                    <div class="invalid-feedback">Employee name is required.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Phone Number</label>
+                    <input type="text" class="form-control" formControlName="phoneNumber"
+                           [class.is-invalid]="employeeForm.get('phoneNumber')?.invalid && employeeForm.get('phoneNumber')?.touched">
+                    <div class="invalid-feedback">Phone number is required.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" formControlName="email"
+                           [class.is-invalid]="employeeForm.get('email')?.invalid && employeeForm.get('email')?.touched">
+                    <div class="invalid-feedback">Valid email is required.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Department</label>
+                    <input type="text" class="form-control" formControlName="department"
+                           [class.is-invalid]="employeeForm.get('department')?.invalid && employeeForm.get('department')?.touched">
+                    <div class="invalid-feedback">Department is required.</div>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-success me-2" [disabled]="employeeForm.invalid">
+                        {{ isEditMode ? 'Update' : 'Save' }}
+                    </button>
+                    <button type="button" class="btn btn-secondary" routerLink="/employees">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

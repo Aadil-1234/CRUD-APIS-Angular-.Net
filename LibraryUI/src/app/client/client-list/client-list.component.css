@@ -1,0 +1,57 @@
+.pagination-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255,255,255,0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+.sort-header {
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  padding: 6px 10px;
+  border-radius: 4px;
+}
+.sort-header:hover {
+  background-color: rgba(255,255,255,0.1);
+}
+.sort-header.active {
+  color: #fff;
+  background-color: rgba(255,255,255,0.15);
+}
+.sort-icons {
+  display: flex;
+  flex-direction: column;
+  line-height: 0.6;
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.3);
+  transition: color 0.2s;
+}
+.sort-header:hover .sort-icons {
+  color: rgba(255,255,255,0.6);
+}
+.sort-header.active .sort-icons .active-sort {
+  color: #0dcaf0; /* Cyan color for active sort */
+  text-shadow: 0 0 5px rgba(13, 202, 240, 0.5);
+}
+.page-link {
+  cursor: pointer;
+}
+.gap-2 {
+  gap: 0.5rem;
+}
